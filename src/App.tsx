@@ -79,7 +79,6 @@ function App() {
 
   const duplicateNode = () => {
     const duplicatesNodes = nodes.filter((node) => selectedNodes.includes(node.id));
-    console.log(duplicatesNodes)
     for(let node of duplicatesNodes) {
       let newNode = {
           id: getId(),
@@ -109,6 +108,12 @@ function App() {
     setNodes(newNodes);
   }
 
+  const keyDown = (event) => {
+    if(event.key == 'd') {
+      duplicateNode();
+    }
+  }
+
   return (
     <div>
       <main style={cssFlow}>
@@ -125,6 +130,7 @@ function App() {
           onEdgesChange={onEdgesChange}
           onNodeClick={(e, node) => console.log('click', node)}
           fitView
+          onKeyDown={keyDown}
         >
           <Background variant={BackgroundVariant.Lines} />
           {/* <MiniMap /> */}
