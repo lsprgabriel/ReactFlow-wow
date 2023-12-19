@@ -8,22 +8,22 @@ import ReactFlow, {
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
-} from 'reactflow'; 
+} from 'reactflow';
 import 'reactflow/dist/style.css';
-import ResizableNodeSelected from './ResizableNodeSelected.jsx'; 
+import ResizableNodeSelected from './ResizableNodeSelected.jsx';
 import { useState, useCallback } from 'react';
 
 import { cssFlow, cssBtnGroup, cssBtn, cssNodeSelect, defaultNode } from './styles/frameworkCSS.ts';
 import { getId } from './utils/getId.ts';
 
-const nodeTypes = { ResizableNodeSelected };
-const initNodes = [ defaultNode ];
- 
+const nodeTypes = { resizable: ResizableNodeSelected };
+const initNodes = [defaultNode];
+
 function App() {
   const [nodes, setNodes] = useNodesState(initNodes);
   const [edges, setEdges] = useEdgesState([]);
-  const [ selectedNodes, setSelectedNodes ] = useState([]);
-  
+  const [selectedNodes, setSelectedNodes] = useState([]);
+
 
 
 
@@ -36,12 +36,19 @@ function App() {
   );
 
   const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    (changes) => {
+      setEdges((eds) => applyEdgeChanges(changes, eds))
+      console.log(edges)
+    },
     [],
   );
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
+    (connection) => {
+      setEdges((eds) => addEdge(connection, eds))
+
+      console.log(connection)
+    },
     [setEdges],
   );
 
@@ -50,12 +57,12 @@ function App() {
     const id = getId();
     const newNode = {
       id,
-      type: 'ResizableNodeSelected',
+      type: 'resizable',
       position: ({
         x: 300,
         y: 200,
       }),
-      data: { label: `Node ${id}`},
+      data: { label: `Node ${id}` },
       style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
     };
     setNodes((nds) => nds.concat(newNode));
@@ -70,7 +77,7 @@ function App() {
         x: 300,
         y: 200,
       }),
-      data: { label: `Node ${id}`},
+      data: { label: `Node ${id}` },
       style: { width: 100, height: 50, backgroundColor: randomColor(), border: '1px solid #000000' },
     };
     setNodes((nds) => nds.concat(newNode));
@@ -78,7 +85,7 @@ function App() {
 
   const selectNode = (changes) => {
     let nodesIds = [0];
-    for(let change of changes) {
+    for (let change of changes) {
       nodesIds.push(change.id)
     }
     nodesIds = nodesIds.filter((value, index) => nodesIds.indexOf(value) == index);
@@ -93,26 +100,26 @@ function App() {
       return node;
     });
     const duplicatesNodes = nodes.filter((node) => selectedNodes.includes(node.id));
-    for(let node of duplicatesNodes) {
+    for (let node of duplicatesNodes) {
       let newNode = {
-          id: getId(),
-          position: {
-            x: node.position.x + 100,
-            y: node.position.y + 100,
-          },
-          data: { label: node.data.label},
-          type: node.type,
-          style: node.style,
-          selected: true
-        };
-        setNodes((nds) => nds.concat(newNode));
-      }
+        id: getId(),
+        position: {
+          x: node.position.x + 100,
+          y: node.position.y + 100,
+        },
+        data: { label: node.data.label },
+        type: node.type,
+        style: node.style,
+        selected: true
+      };
+      setNodes((nds) => nds.concat(newNode));
+    }
   }
 
   const changeColor = () => {
     console.log(selectedNodes)
     const newNodes = nodes.map((node) => {
-      if(selectedNodes.includes(node.id)) {
+      if (selectedNodes.includes(node.id)) {
         node.style = {
           ...node.style,
           backgroundColor: randomColor(),
@@ -124,7 +131,7 @@ function App() {
   }
 
   const keyDown = (event) => {
-    if(event.key == 'd') {
+    if (event.key == 'd') {
       duplicateNode();
     }
   }
@@ -136,7 +143,6 @@ function App() {
           className="react-flow-node-resizer-example"
           minZoom={0.2}
           maxZoom={4}
-          nodeTypes={nodeTypes}
           snapToGrid={true}
           snapGrid={[5, 5]}
           nodes={nodes}
@@ -147,6 +153,7 @@ function App() {
           fitView
           onKeyDown={keyDown}
           onConnect={onConnect}
+          nodeTypes={nodeTypes}
         >
           <Background variant={BackgroundVariant.Lines} />
           {/* <MiniMap /> */}
