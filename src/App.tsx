@@ -7,6 +7,7 @@ import ReactFlow, {
   useEdgesState,
   applyNodeChanges,
   applyEdgeChanges,
+  addEdge,
 } from 'reactflow'; 
 import 'reactflow/dist/style.css';
 import ResizableNodeSelected from './ResizableNodeSelected.jsx'; 
@@ -34,6 +35,11 @@ function App() {
   const onEdgesChange = useCallback(
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     [],
+  );
+
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges],
   );
 
 
@@ -75,6 +81,7 @@ function App() {
     nodesIds = nodesIds.filter((value, index) => nodesIds.indexOf(value) == index);
     nodesIds = nodesIds.filter((value) => value != 0);
     setSelectedNodes(nodesIds);
+    console.log(nodesIds)
   }
 
   const duplicateNode = () => {
@@ -131,6 +138,7 @@ function App() {
           onNodeClick={(e, node) => console.log('click', node)}
           fitView
           onKeyDown={keyDown}
+          onConnect={onConnect}
         >
           <Background variant={BackgroundVariant.Lines} />
           {/* <MiniMap /> */}
