@@ -1,3 +1,5 @@
+import randomColor from "randomcolor"
+
 import ReactFlow, {
   Controls,
   Background,
@@ -54,9 +56,23 @@ function App() {
       }),
       data: { label: `Node ${id}`},
       style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
+    };
+    setNodes((nds) => nds.concat(newNode));
   }
- 
-  setNodes((nds) => nds.concat(newNode));
+
+  const addDifNode = () => {
+    const id = getId();
+    const newNode = {
+      id,
+      type: 'ResizableNodeSelected',
+      position: ({
+        x: 300,
+        y: 200,
+      }),
+      data: { label: `Node ${id}`},
+      style: { width: 100, height: 50, backgroundColor: randomColor(), border: '1px solid #000000' },
+    };
+    setNodes((nds) => nds.concat(newNode));
   }
 
   const cssFlow = {height: '85vh',width: '100vw', borderBottom: '2px solid red'}
@@ -100,8 +116,8 @@ function App() {
         </ReactFlow>
       </main>
       <div style={cssBtnGroup}>
-        <button style={cssBtn} onClick={addNewNode}>Criar Node</button>
-        <button style={cssBtn} onClick={addNewNode}>Criar Node</button>
+        <button style={cssBtn} onClick={addNewNode}>Criar Node Padrão</button>
+        <button style={cssBtn} onClick={addDifNode}>Criar Node Diferentão</button>
       </div>
     </div>
   );
