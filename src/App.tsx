@@ -21,7 +21,9 @@ const initNodes = [ defaultNode ];
 function App() {
   const [nodes, setNodes] = useNodesState(initNodes);
   const [edges, setEdges] = useEdgesState([]);
-  const [ selectedNodes, setSelectedNodes ] = useState([]);
+  const [selectedNodes, setSelectedNodes] = useState([]);
+   const [teste, setTeste] = useState([])
+  
 
   const onNodesChange = useCallback(
     async (changes) => {
@@ -52,6 +54,63 @@ function App() {
     setNodes((nds) => nds.concat(newNode));
   }
 
+   const addNewGroup = () => {
+    const id = getId();
+    const newGroup = {
+      id,
+      type: "group",
+      position: { x: 0, y: 0 },
+      style: {
+        width: 300,
+        height: 300,
+      },
+    };
+
+
+     setNodes((nds) => nds.concat(newGroup));
+     
+     console.log(newGroup, nodes);
+  };
+
+const addNewNodeInGroup = () => {
+      const id = getId();
+      console.log(nodes[0]);
+      
+    const newNode = {
+      id,
+      position: {
+        x: 20,
+        y: 100,
+      },
+      parentNode: selectedNodes[0],
+      data: { label: `Node ${id}` },
+    };
+
+    setNodes((nds) => nds.concat(newNode));
+  };
+
+  const isGroup = (node) => {
+    console.log(node?.type)
+    return node?.type == 'group' && node.id == selectedNodes[0] ? setTeste(true) : setTeste(false)
+  }
+
+  const addNewNodeInGroupExtent = () => {
+    const id = getId();
+    const newNode = {
+      id,
+      position: {
+        x: 20,
+        y: 100,
+      },
+      parentNode: selectedNodes[0],
+      extent: "parent",
+      data: { label: `Node ${id}` },
+    };
+
+    setNodes((nds) => nds.concat(newNode));
+  };
+
+
   const addDifNode = () => {
     const id = getId();
     const newNode = {
@@ -68,13 +127,16 @@ function App() {
   }
 
   const selectNode = (changes) => {
-    let nodesIds = [0];
+    let nodesIds = [];
     for(let change of changes) {
       nodesIds.push(change.id)
     }
     nodesIds = nodesIds.filter((value, index) => nodesIds.indexOf(value) == index);
-    nodesIds = nodesIds.filter((value) => value != 0);
     setSelectedNodes(nodesIds);
+    console.log(teste);
+    console.log(selectedNodes);
+    
+    
   }
 
   const duplicateNode = () => {
@@ -119,7 +181,7 @@ function App() {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
-          onNodeClick={(e, node) => console.log('click', node)}
+          onNodeClick={(e, node) =>  isGroup(node) }
           fitView
         >
           <Background variant={BackgroundVariant.Lines} />
@@ -129,7 +191,8 @@ function App() {
       </main>
       <div style={cssBtnGroup}>
         <span style={cssNodeSelect}>
-          node select = {selectedNodes}
+      {teste ? 'Group select ' : 'node select '}
+           = {selectedNodes}
         </span>
       </div>
       <div style={cssBtnGroup}>
@@ -137,9 +200,12 @@ function App() {
         <button style={cssBtn} onClick={addDifNode}>Criar Node Diferentão</button>
         <button style={cssBtn} onClick={duplicateNode}>Duplicar</button>
         <button style={cssBtn} onClick={changeColor}> mudarCor</button>
+        <button style={cssBtn} onClick={addNewGroup}> Criar grupo</button>
+        <button style={cssBtn} onClick={addNewNodeInGroup}> Adicionar ao grupo</button>
+        <button style={cssBtn} onClick={addNewNodeInGroupExtent}> Adicionar ao grupo extendido</button>
       </div>
     </div>
   );
-}
+  }
 
 export default App;
