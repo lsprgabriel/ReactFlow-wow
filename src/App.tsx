@@ -19,10 +19,12 @@ const nodeTypes = { ResizableNodeSelected };
 const initNodes = [ defaultNode ];
  
 function App() {
-  const [nodes, setNodes] = useNodesState(initNodes);
-  const [edges, setEdges] = useEdgesState([]);
-  const [ selectedNodes, setSelectedNodes ] = useState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
+  
+
+  // ta bom
   const addNewNode = () => {
     const id = getId();
     const newNode = {
@@ -37,7 +39,7 @@ function App() {
     };
     setNodes((nds) => nds.concat(newNode));
   }
-
+  // ta bom
   const addDifNode = () => {
     const id = getId();
     const newNode = {
@@ -53,46 +55,75 @@ function App() {
     setNodes((nds) => nds.concat(newNode));
   }
 
-  const onNodesChange = useCallback(
-    async (changes) => {
-      setNodes((nds) => applyNodeChanges(changes, nds))
-      selectNode(changes)
-    },
-    [],
-  );
+  // aqui ficou estranho
+  // ******************************************************
+  // const onNodesChange = useCallback(
+  //   async (changes) => {
+  //     setNodes((nds) => applyNodeChanges(changes, nds))
+  //     selectNode(changes)
+  //   },
+  //   [],
+  // );
+  // const onEdgesChange = useCallback(
+  //   (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+  //   [],
+  // );
+  // const [ selectedNodes, setSelectedNodes ] = useState([]);
 
-  const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [],
-  );
+  // const selectNode = (changes) => {
+  //   let nodesIds = [0];
+  //   for(let change of changes) {
+  //     nodesIds.push(change.id)
+  //   }
+  //   nodesIds = nodesIds.filter((value, index) => nodesIds.indexOf(value) == index);
+  //   nodesIds = nodesIds.filter((value) => value != 0);
+  //   console.log(nodesIds, nodes);
+  //   setSelectedNodes(nodesIds);
+  // }
 
-  const selectNode = (changes) => {
-    let nodesIds = [0];
-    for(let change of changes) {
-      nodesIds.push(change.id)
-    }
-    nodesIds = nodesIds.filter((value, index) => nodesIds.indexOf(value) == index);
-    nodesIds = nodesIds.filter((value) => value != 0);
-    console.log(nodesIds, nodes);
-    setSelectedNodes(nodesIds);
+  // const duplicateNode = () => {
+  //   const duplicatesNodes = nodes.filter((node) => selectedNodes.includes(node.id));
+
+  //   for(let node of duplicatesNodes) {
+  //     let newNode = {
+  //         id: nodes[nodes.length - 1].id + "1",
+  //         position: {
+  //           x: node.position.x + 100,
+  //           y: node.position.y + 100,
+  //         },
+  //         data: { label: 'Hello' },
+  //         type: 'input',
+  //       };
+  //       setNodes((nds) => nds.concat(newNode));
+        
+  //     }
+  // }
+
+
+  const [ NodeSelected, setNodeSelected ] = useState([]);
+
+  const consoleLog = (env, node) => {
+    console.log(node)
+    setNodeSelected('teste');
   }
 
-  const duplicateNode = () => {
-    const duplicatesNodes = nodes.filter((node) => selectedNodes.includes(node.id));
-
-    for(let node of duplicatesNodes) {
-      let newNode = {
-          id: nodes[nodes.length - 1].id + "1",
-          position: {
-            x: node.position.x + 100,
-            y: node.position.y + 100,
-          },
-          data: { label: 'Hello' },
-          type: 'input',
-        };
-        setNodes((nds) => nds.concat(newNode));
-        
-      }
+  const duplicateNode2 = (node) => {
+    console.log(node)
+    let [verify, count] = ['', ''];
+    if(verify == node){
+      console.log('igual')
+    }
+    count = (verify == node) ? ` (${count + 1})` : ` (${1})`;
+    verify = node;
+    setNodes((nds) => nds.concat({
+      id: nodes[nodes.length - 1].id + 1,
+      position: {
+        x: node.position.x + 100,
+        y: node.position.y + 100,
+      },
+      data: { label: node.data.label + count },
+      type: 'input',
+    }));
   }
 
   return (
@@ -109,6 +140,7 @@ function App() {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onNodeClick={consoleLog}
           fitView
         >
           <Background variant={BackgroundVariant.Lines} />
@@ -119,7 +151,11 @@ function App() {
       <div style={cssBtnGroup}>
         <button style={cssBtn} onClick={addNewNode}>Criar Node Padrão</button>
         <button style={cssBtn} onClick={addDifNode}>Criar Node Diferentão</button>
-        <button style={cssBtn} onClick={duplicateNode}>Duplicar</button>
+        {/* <button style={cssBtn} onClick={duplicateNode}>Duplicar (bochi)</button> */}
+        <button style={cssBtn} onClick={() => duplicateNode2(NodeSelected)}>Duplicar</button>
+        <span>
+          node select = {NodeSelected}
+        </span>
       </div>
     </div>
   );
