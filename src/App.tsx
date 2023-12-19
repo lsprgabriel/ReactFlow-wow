@@ -1,5 +1,12 @@
-import ReactFlow, { MiniMap, Background, BackgroundVariant, Controls, useEdgesState, useNodesState } from 'reactflow';
-
+import ReactFlow, {
+  Controls,
+  Background,
+  BackgroundVariant,
+  useNodesState,
+  useEdgesState,
+} from 'reactflow';
+ 
+import 'reactflow/dist/style.css';
 import ResizableNode from './ResizableNode.jsx';
 import ResizableNodeSelected from './ResizableNodeSelected.jsx'; 
 import CustomResizerNode from './CustomResizerNode.jsx';
@@ -12,44 +19,90 @@ const nodeTypes: any = {
   CustomResizerNode,
 };
 
+
+let initialId = 1;
+const getId = () => `${initialId++}`;
+const id = getId();
+
 const initNodes = [
   {
-    id: 'a',
-    // type: 'ResizableNode',
-    data: { label: 'Node A' },
-    position: { x: 400, y: 400 },
-    style: { background: '#FF2D00', border: '1px solid blue', borderRadius: 0, fontSize: 12, zIndex: 999 },
+    id,
+    position: { x: 250, y: 250 },
+    data: { label: `Node ${id}` },
   },
-  {
-    id: 'b',
-    type: 'ResizableNode',
-    data: { label: 'Node A' },
-    position: { x: 600, y: 600 },
-    style: { background: '#36FF00', border: '1px solid blue', borderRadius: 0, fontSize: 12 },
-  },
-
 ];
-const initEdges: any = []; 
+ 
+const initEdges = [
+  {
+    id: 'a-b',
+    source: 'a',
+    target: 'b',
+  },
+];
 
 function App() {
-  const [nodes, , onNodesChange] = useNodesState(initNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
   const [edges, , onEdgesChange] = useEdgesState(initEdges);
 
+  const addNewNode = () => {
+    const id = getId();
+    const newNode = {
+      id,
+      position: ({
+        x: 300,
+        y: 200,
+      }),
+      data: { label: `Node ${id}`}
+  }
+ 
+  setNodes((nds) => nds.concat(newNode));
+  }
+
+  const cssFlow = {height: '85vh',width: '100vw', borderBottom: '2px solid red'}
+
+  const cssBtn = {
+    backgroundColor: '#4CAF50', 
+    border: '1px solid #e3e3e3', 
+    borderRadius: '5px',
+    color: 'white',
+    margin: '32px',
+    padding: '16px', 
+    fontSize: '16px',
+    cursor: 'pointer',
+  }
+
+  const cssBtnGroup = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+
   return (
-    <ReactFlow
-      defaultNodes={initNodes}
-      defaultEdges={initEdges}
-      className="react-flow-node-resizer-example"
-      minZoom={0.2}
-      maxZoom={4}
-      nodeTypes={nodeTypes}
-      snapToGrid={true}
-      snapGrid={[5, 5]}
-    >
-      <Background variant={BackgroundVariant.Lines} />
-      {/* <MiniMap /> */}
-      <Controls />
-    </ReactFlow>
+    <div>
+      <main style={cssFlow}>
+        <ReactFlow
+          className="react-flow-node-resizer-example"
+          minZoom={0.2}
+          maxZoom={4}
+          nodeTypes={nodeTypes}
+          snapToGrid={true}
+          snapGrid={[5, 5]}
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          fitView
+        >
+          <Background variant={BackgroundVariant.Lines} />
+          {/* <MiniMap /> */}
+          <Controls />
+        </ReactFlow>
+      </main>
+      <div style={cssBtnGroup}>
+        <button style={cssBtn} onClick={addNewNode}>Criar Node</button>
+        <button style={cssBtn} onClick={addNewNode}>Criar Node</button>
+      </div>
+    </div>
   );
 }
 
