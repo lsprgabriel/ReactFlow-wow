@@ -26,7 +26,7 @@ const initNodes = [
     type: 'ResizableNodeSelected',
     position: { x: 250, y: 250 },
     data: { label: `Node ${id}` },
-    style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #e3e3e3' },
+    style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
   },
 ];
  
@@ -53,7 +53,7 @@ function App() {
         y: 200,
       }),
       data: { label: `Node ${id}`},
-      style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #e3e3e3' },
+      style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
   }
  
   setNodes((nds) => nds.concat(newNode));

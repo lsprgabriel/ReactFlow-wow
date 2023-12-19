@@ -4,10 +4,10 @@ import { Handle, Position, NodeResizer } from 'reactflow';
 const ResizableNodeSelected = ({ data, selected }) => {
     return (
         <>
-            <NodeResizer color="#ff0071" isVisible={selected} minWidth={100} minHeight={20} />
-            <Handle type="target" position={Position.Left} />
+            <NodeResizer color="#0042FF" isVisible={selected} minWidth={100} minHeight={20} />
+            {/* <Handle type="target" position={Position.Left} /> */}
             <div style={{ padding: 10 }}>{data.label}</div>
-            <Handle type="source" position={Position.Right} />
+            {/* <Handle type="source" position={Position.Right} /> */}
         </>
     );
 };
