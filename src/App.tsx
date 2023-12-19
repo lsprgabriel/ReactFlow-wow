@@ -7,16 +7,12 @@ import ReactFlow, {
 } from 'reactflow';
  
 import 'reactflow/dist/style.css';
-import ResizableNode from './ResizableNode.jsx';
 import ResizableNodeSelected from './ResizableNodeSelected.jsx'; 
-import CustomResizerNode from './CustomResizerNode.jsx';
 
 import 'reactflow/dist/style.css';
 
 const nodeTypes: any = {
-  ResizableNode,
   ResizableNodeSelected,
-  CustomResizerNode,
 };
 
 
@@ -27,8 +23,10 @@ const id = getId();
 const initNodes = [
   {
     id,
+    type: 'ResizableNodeSelected',
     position: { x: 250, y: 250 },
     data: { label: `Node ${id}` },
+    style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #e3e3e3' },
   },
 ];
  
@@ -37,6 +35,7 @@ const initEdges = [
     id: 'a-b',
     source: 'a',
     target: 'b',
+    type: 'smoothstep',
   },
 ];
 
@@ -48,11 +47,13 @@ function App() {
     const id = getId();
     const newNode = {
       id,
+      type: 'ResizableNodeSelected',
       position: ({
         x: 300,
         y: 200,
       }),
-      data: { label: `Node ${id}`}
+      data: { label: `Node ${id}`},
+      style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #e3e3e3' },
   }
  
   setNodes((nds) => nds.concat(newNode));
