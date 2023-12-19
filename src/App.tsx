@@ -23,6 +23,9 @@ function App() {
   const [nodes, setNodes] = useNodesState(initNodes);
   const [edges, setEdges] = useEdgesState([]);
   const [ selectedNodes, setSelectedNodes ] = useState([]);
+  
+
+
 
   const onNodesChange = useCallback(
     async (changes) => {
@@ -85,6 +88,10 @@ function App() {
   }
 
   const duplicateNode = () => {
+    const unselectOldNodes = nodes.map((node) => {
+      node.selected = false;
+      return node;
+    });
     const duplicatesNodes = nodes.filter((node) => selectedNodes.includes(node.id));
     for(let node of duplicatesNodes) {
       let newNode = {
@@ -96,6 +103,7 @@ function App() {
           data: { label: node.data.label},
           type: node.type,
           style: node.style,
+          selected: true
         };
         setNodes((nds) => nds.concat(newNode));
       }
@@ -154,7 +162,7 @@ function App() {
         <button style={cssBtn} onClick={addNewNode}>Criar Node Padrão</button>
         <button style={cssBtn} onClick={addDifNode}>Criar Node Diferentão</button>
         <button style={cssBtn} onClick={duplicateNode}>Duplicar</button>
-        <button style={cssBtn} onClick={changeColor}> mudarCor</button>
+        <button style={cssBtn} onClick={changeColor}>Mudar Cor</button>
       </div>
     </div>
   );
