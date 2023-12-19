@@ -1,49 +1,27 @@
 import randomColor from "randomcolor"
-
 import ReactFlow, {
   Controls,
   Background,
   BackgroundVariant,
   useNodesState,
   useEdgesState,
-} from 'reactflow';
- 
+  applyNodeChanges,
+  applyEdgeChanges,
+} from 'reactflow'; 
 import 'reactflow/dist/style.css';
 import ResizableNodeSelected from './ResizableNodeSelected.jsx'; 
+import { useState, useCallback } from 'react';
 
-import 'reactflow/dist/style.css';
+import { cssFlow, cssBtnGroup, cssBtn, defaultNode } from './styles/frameworkCSS.ts';
+import { getId } from './utils/getId.ts';
 
-const nodeTypes: any = {
-  ResizableNodeSelected,
-};
-
-
-let initialId = 1;
-const getId = () => `${initialId++}`;
-const id = getId();
-
-const initNodes = [
-  {
-    id,
-    type: 'ResizableNodeSelected',
-    position: { x: 250, y: 250 },
-    data: { label: `Node ${id}` },
-    style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
-  },
-];
+const nodeTypes = { ResizableNodeSelected };
+const initNodes = [ defaultNode ];
  
-const initEdges = [
-  {
-    id: 'a-b',
-    source: 'a',
-    target: 'b',
-    type: 'smoothstep',
-  },
-];
-
 function App() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
-  const [edges, , onEdgesChange] = useEdgesState(initEdges);
+  const [nodes, setNodes] = useNodesState(initNodes);
+  const [edges, setEdges] = useEdgesState([]);
+  const [ selectedNodes, setSelectedNodes ] = useState([]);
 
   const addNewNode = () => {
     const id = getId();
@@ -75,23 +53,46 @@ function App() {
     setNodes((nds) => nds.concat(newNode));
   }
 
-  const cssFlow = {height: '85vh',width: '100vw', borderBottom: '2px solid red'}
+  const onNodesChange = useCallback(
+    async (changes) => {
+      setNodes((nds) => applyNodeChanges(changes, nds))
+      selectNode(changes)
+    },
+    [],
+  );
 
-  const cssBtn = {
-    backgroundColor: '#4CAF50', 
-    border: '1px solid #e3e3e3', 
-    borderRadius: '5px',
-    color: 'white',
-    margin: '32px',
-    padding: '16px', 
-    fontSize: '16px',
-    cursor: 'pointer',
+  const onEdgesChange = useCallback(
+    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    [],
+  );
+
+  const selectNode = (changes) => {
+    let nodesIds = [0];
+    for(let change of changes) {
+      nodesIds.push(change.id)
+    }
+    nodesIds = nodesIds.filter((value, index) => nodesIds.indexOf(value) == index);
+    nodesIds = nodesIds.filter((value) => value != 0);
+    console.log(nodesIds, nodes);
+    setSelectedNodes(nodesIds);
   }
 
-  const cssBtnGroup = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+  const duplicateNode = () => {
+    const duplicatesNodes = nodes.filter((node) => selectedNodes.includes(node.id));
+
+    for(let node of duplicatesNodes) {
+      let newNode = {
+          id: nodes[nodes.length - 1].id + "1",
+          position: {
+            x: node.position.x + 100,
+            y: node.position.y + 100,
+          },
+          data: { label: 'Hello' },
+          type: 'input',
+        };
+        setNodes((nds) => nds.concat(newNode));
+        
+      }
   }
 
   return (
@@ -118,6 +119,7 @@ function App() {
       <div style={cssBtnGroup}>
         <button style={cssBtn} onClick={addNewNode}>Criar Node Padrão</button>
         <button style={cssBtn} onClick={addDifNode}>Criar Node Diferentão</button>
+        <button style={cssBtn} onClick={duplicateNode}>Duplicar</button>
       </div>
     </div>
   );
