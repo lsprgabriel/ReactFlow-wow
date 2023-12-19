@@ -96,9 +96,13 @@ function App() {
   }
 
   const changeColor = () => {
+    console.log(selectedNodes)
     const newNodes = nodes.map((node) => {
       if(selectedNodes.includes(node.id)) {
-        node.style.backgroundColor = randomColor();
+        node.style = {
+          ...node.style,
+          backgroundColor: randomColor(),
+        }
       }
       return node;
     })
