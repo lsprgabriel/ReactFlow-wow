@@ -20,7 +20,7 @@ marginTop: '16px',
 
 const defaultNode = {
     id: '1',
-    type: 'resizable',
+    type: 'ResizableNodeSelected',
     position: { x: 250, y: 250 },
     data: { label: `Node ${1}` },
     style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },

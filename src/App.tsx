@@ -24,7 +24,6 @@ function App() {
   const [edges, setEdges] = useEdgesState([]);
   const [selectedNodes, setSelectedNodes] = useState([]);
    const [teste, setTeste] = useState([])
-  
 
   const onNodesChange = useCallback(
     async (changes) => {
@@ -51,12 +50,11 @@ function App() {
     [setEdges],
   );
 
-
   const addNewNode = () => {
     const id = getId();
     const newNode = {
       id,
-      type: 'resizable',
+      type: 'ResizableNodeSelected',
       position: ({
         x: 300,
         y: 200,
@@ -65,6 +63,26 @@ function App() {
       style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
     };
     setNodes((nds) => nds.concat(newNode));
+  }
+
+  const addDifNode = () => {
+    const id = getId();
+    const newNode = {
+      id,
+      type: 'ResizableNodeSelected',
+      position: ({
+        x: 300,
+        y: 200,
+      }),
+      data: { label: `Node ${id}` },
+      style: { width: 100, height: 50, backgroundColor: randomColor(), border: '1px solid #000000' },
+    };
+    setNodes((nds) => nds.concat(newNode));
+  }
+
+  const delNode = () => {
+    const newNodes = nodes.filter((node) => !selectedNodes.includes(node.id));
+    setNodes(newNodes);
   }
 
    const addNewGroup = () => {
@@ -78,10 +96,7 @@ function App() {
         height: 300,
       },
     };
-
-
      setNodes((nds) => nds.concat(newGroup));
-     
      console.log(newGroup, nodes);
   };
 
@@ -98,15 +113,14 @@ const addNewNodeInGroup = () => {
       parentNode: selectedNodes[0],
       data: { label: `Node ${id}` },
     };
-
     setNodes((nds) => nds.concat(newNode));
   };
 
   const delNodeInGroup = () => {
-   const nodeset = nodes.find((element) => element == selectedNodes[0])
-console.log(nodeset);
-
+    const nodeset = nodes.find((element) => element == selectedNodes[0])
+    console.log(nodeset);
   };
+
   const isGroup = (node) => {
     console.log(node?.type)
     return node?.type == 'group' && node.id == selectedNodes[0] ? setTeste(true) : setTeste(false)
@@ -124,25 +138,8 @@ console.log(nodeset);
       extent: "parent",
       data: { label: `Node ${id}` },
     };
-
     setNodes((nds) => nds.concat(newNode));
   };
-
-
-  const addDifNode = () => {
-    const id = getId();
-    const newNode = {
-      id,
-      type: 'ResizableNodeSelected',
-      position: ({
-        x: 300,
-        y: 200,
-      }),
-      data: { label: `Node ${id}` },
-      style: { width: 100, height: 50, backgroundColor: randomColor(), border: '1px solid #000000' },
-    };
-    setNodes((nds) => nds.concat(newNode));
-  }
 
   const selectNode = (changes) => {
     let nodesIds = [];
@@ -228,13 +225,14 @@ console.log(nodeset);
       </div>
       <div style={cssBtnGroup}>
         <button style={cssBtn} onClick={addNewNode}>Criar Node Padrão</button>
-        <button style={cssBtn} onClick={addDifNode}>Criar Node Diferentão</button>
+        <button style={cssBtn} onClick={addDifNode}>Criar Node Colorido</button>
         <button style={cssBtn} onClick={duplicateNode}>Duplicar</button>
-        <button style={cssBtn} onClick={changeColor}> mudar Cor</button>
-        <button style={cssBtn} onClick={addNewGroup}> Criar grupo</button>
-        <button style={cssBtn} onClick={addNewNodeInGroup}> Adicionar ao grupo</button>
-        <button style={cssBtn} onClick={addNewNodeInGroupExtent}> Adicionar ao grupo extendido</button>
-        <button style={cssBtn} onClick={delNodeInGroup}> retirar do grupo</button>
+        <button style={cssBtn} onClick={changeColor}>Mudar Cor do Node</button>
+        <button style={cssBtn} onClick={addNewGroup}>Criar Grupo</button>
+        <button style={cssBtn} onClick={addNewNodeInGroup}>Adicionar ao Grupo</button>
+        <button style={cssBtn} onClick={addNewNodeInGroupExtent}>Adicionar ao Grugpo Extendido</button>
+        <button style={cssBtn} onClick={delNodeInGroup}>Retirar do Grupo</button>
+        <button style={cssBtn} onClick={delNode}>Deletar Node</button>
       </div>
     </div>
   );
