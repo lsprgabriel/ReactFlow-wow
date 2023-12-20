@@ -18,8 +18,6 @@ import ResizableNodeSelected from './ResizableNodeSelected.jsx';
 import ResizableNodeSelectedNoHandles from './ResiableNodeSelectedNoHandles.jsx'
 import { useState, useCallback } from 'react';
 
-import 'reactflow/dist/style.css';
-import './Shapes.css'
 import { cssFlow, cssBtnGroup, cssBtn, cssNodeSelect, defaultNode } from './styles/frameworkCSS.ts';
 import { getId } from './utils/getId.ts';
 
@@ -36,25 +34,6 @@ function Flow(props) {
 
   const shiftPressed = useKeyPress('Shift')
   const controlPressed = useKeyPress('Control')
-
-const initNodes = [
-  {
-    id,
-    type: 'ResizableNodeSelected',
-    position: { x: 250, y: 250 },
-    data: { label: `Node ${id}` },
-    className: 'rectangle',
-  },
-];
- 
-const initEdges = [
-  {
-    id: 'a-b',
-    source: 'a',
-    target: 'b',
-    type: 'smoothstep',
-  },
-];
 
   const onNodesChange = useCallback(
     async (changes) => {
@@ -89,11 +68,8 @@ const initEdges = [
         x: event.clientX,
         y: event.clientY,
       }),
-      data: { label: `Node ${id}`},
-      className: 'rectangle'
       data: { label: `Node ${id}` },
       style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
-
     };
     setNodes((nds) => nds.concat(newNode));
   },
@@ -109,80 +85,15 @@ const initEdges = [
         x: 300,
         y: 200,
       }),
-
-      data: { label: `Node ${id}`},
-      style: { backgroundColor: randomColor() },
-      className: 'difRectangle',
-
       data: { label: `Node ${id}` },
       style: { width: 100, height: 50, backgroundColor: randomColor(), border: '1px solid #000000' },
-
     };
     setNodes((nds) => nds.concat(newNode));
   }
 
-  const addCirNode = () => {
-    const id = getId();
-    const newNode = {
-      id,
-      type: 'ResizableNodeSelected',
-      position: ({
-        x: 300,
-        y: 200,
-      }),
-      data: { label: `Node ${id}`},
-      className: 'circle'
-    };
-    setNodes((nds) => nds.concat(newNode));
-  }
-
-  const addTriNode = () => {
-    const id = getId();
-    const newNode = {
-      id,
-      type: 'ResizableNodeSelected',
-      position: ({
-        x: 300,
-        y: 200,
-      }),
-      data: { label: `Node ${id}`},
-      className: 'triangle'
-    };
-    setNodes((nds) => nds.concat(newNode));
-  }
-
-  const addSqrNode = () => {
-    const id = getId();
-    const newNode = {
-      id,
-      type: 'ResizableNodeSelected',
-      position: ({
-        x: 300,
-        y: 200,
-      }),
-      data: { label: `Node ${id}`},
-      className: 'square'
-    };
-    setNodes((nds) => nds.concat(newNode));
-  }
-
-  const cssFlow = {height: '85vh', width: '100vw', borderBottom: '2px solid red'}
-
-  const cssBtn = {
-    backgroundColor: '#4CAF50', 
-    border: '1px solid #e3e3e3', 
-    borderRadius: '5px',
-    color: 'white',
-    margin: '32px',
-    padding: '16px', 
-    fontSize: '16px',
-    cursor: 'pointer',
-  }
-
-    const delNode = () => {
+  const delNode = () => {
     const newNodes = nodes.filter((node) => !selectedNodes.includes(node.id));
     setNodes(newNodes);
-
   }
 
    const addNewGroup = useCallback((event) => {
@@ -336,13 +247,6 @@ const addNewNodeInGroup = () => {
         </ReactFlow>
       </main>
       <div style={cssBtnGroup}>
-
-        <button style={cssBtn} onClick={addNewNode}>Criar Node padrão</button>
-        <button style={cssBtn} onClick={addDifNode}>Criar Node de cor aleatória</button>
-        <button style={cssBtn} onClick={addSqrNode}>Criar Node quadrado</button>
-        <button style={cssBtn} onClick={addCirNode}>Criar Node redondao</button>
-        <button style={cssBtn} onClick={addTriNode}>Criar Node triângulo</button>
-
         <span style={cssNodeSelect}>
       {teste ? 'Group select ' : 'node select '}
            = {selectedNodes}
@@ -358,7 +262,6 @@ const addNewNodeInGroup = () => {
         <button style={cssBtn} onClick={addNewNodeInGroupExtent}>Adicionar ao Grugpo Extendido</button>
         <button style={cssBtn} onClick={delNodeInGroup}>Retirar do Grupo</button>
         <button style={cssBtn} onClick={delNode}>Deletar Node</button>
-
       </div>
     </div>
   );
