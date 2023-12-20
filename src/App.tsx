@@ -89,6 +89,11 @@ const addNewNodeInGroup = () => {
     setNodes((nds) => nds.concat(newNode));
   };
 
+  const delNodeInGroup = () => {
+   const nodeset = nodes.find((element) => element == selectedNodes[0])
+console.log(nodeset);
+
+  };
   const isGroup = (node) => {
     console.log(node?.type)
     return node?.type == 'group' && node.id == selectedNodes[0] ? setTeste(true) : setTeste(false)
@@ -203,6 +208,7 @@ const addNewNodeInGroup = () => {
         <button style={cssBtn} onClick={addNewGroup}> Criar grupo</button>
         <button style={cssBtn} onClick={addNewNodeInGroup}> Adicionar ao grupo</button>
         <button style={cssBtn} onClick={addNewNodeInGroupExtent}> Adicionar ao grupo extendido</button>
+        <button style={cssBtn} onClick={delNodeInGroup}> retirar do grupo</button>
       </div>
     </div>
   );
