@@ -8,10 +8,13 @@ import ReactFlow, {
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
+  useReactFlow,
+  ReactFlowProvider,
+  useKeyPress,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import ResizableNodeSelected from './ResizableNodeSelected.jsx';
-import { useState, useCallback } from 'react';
+import { useState, useCallback} from 'react';
 
 import { cssFlow, cssBtnGroup, cssBtn, cssNodeSelect, defaultNode } from './styles/frameworkCSS.ts';
 import { getId } from './utils/getId.ts';
@@ -19,13 +22,13 @@ import { getId } from './utils/getId.ts';
 const nodeTypes = { resizable: ResizableNodeSelected };
 const initNodes = [defaultNode];
 
-function App() {
+function App(props) {
   const [nodes, setNodes] = useNodesState(initNodes);
   const [edges, setEdges] = useEdgesState([]);
   const [selectedNodes, setSelectedNodes] = useState([]);
+  const { project } = useReactFlow();
 
-
-
+  const shiftPressed = useKeyPress('Shift')
 
   const onNodesChange = useCallback(
     async (changes) => {
@@ -53,20 +56,22 @@ function App() {
   );
 
 
-  const addNewNode = () => {
+  const addNewNode = useCallback((event) => {
     const id = getId();
     const newNode = {
       id,
       type: 'resizable',
-      position: ({
-        x: 300,
-        y: 200,
+      position: project({
+        x: event.clientX - 150,
+        y: event.clientY - 40,
       }),
       data: { label: `Node ${id}` },
       style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
     };
     setNodes((nds) => nds.concat(newNode));
-  }
+  },
+  [setNodes, project],
+  )
 
   const addDifNode = () => {
     const id = getId();
@@ -154,6 +159,9 @@ function App() {
           onKeyDown={keyDown}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
+          panOnDrag={true}
+          onClick={shiftPressed ? addNewNode : 0}
+          {...props}
         >
           <Background variant={BackgroundVariant.Lines} />
           {/* <MiniMap /> */}
@@ -175,4 +183,12 @@ function App() {
   );
 }
 
-export default App;
+function FlowWithProvider(props) {
+  return (
+    <ReactFlowProvider>
+      <App {...props} />
+    </ReactFlowProvider>
+  );
+}
+
+export default FlowWithProvider;
