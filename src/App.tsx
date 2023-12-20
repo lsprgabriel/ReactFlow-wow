@@ -76,6 +76,21 @@ function Flow(props) {
   [setNodes, project]
   )
 
+  const addNewNodeButton = () => {
+    const id = getId();
+    const newNode = {
+      id,
+      type: 'ResizableNodeSelected',
+      position: ({
+        x: 300,
+        y: 200,
+      }),
+      data: { label: `Node ${id}` },
+      style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
+    };
+    setNodes((nds) => nds.concat(newNode));
+  }
+
   const addDifNode = () => {
     const id = getId();
     const newNode = {
@@ -253,7 +268,7 @@ const addNewNodeInGroup = () => {
         </span>
       </div>
       <div style={cssBtnGroup}>
-        <button style={cssBtn} onClick={addNewNode}>Criar Node Padrão</button>
+        <button style={cssBtn} onClick={addNewNodeButton}>Criar Node Padrão</button>
         <button style={cssBtn} onClick={addDifNode}>Criar Node Colorido</button>
         <button style={cssBtn} onClick={duplicateNode}>Duplicar</button>
         <button style={cssBtn} onClick={changeColor}>Mudar Cor do Node</button>
