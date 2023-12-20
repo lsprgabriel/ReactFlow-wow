@@ -59,34 +59,18 @@ function Flow(props) {
     [setEdges],
   );
 
-  const addNewNode = useCallback((event) => {
-    const id = getId();
-    const newNode = {
-      id,
-      type: 'ResizableNodeSelected',
-      position: project({
-        x: event.clientX,
-        y: event.clientY,
-      }),
-      data: { label: `Node ${id}` },
-      style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
-    };
-    setNodes((nds) => nds.concat(newNode));
-  },
-  [setNodes, project]
-  )
-
   const addDifNode = () => {
     const id = getId();
     const newNode = {
       id,
-      type: 'ResizableNodeSelected',
+      type: 'resizable',
       position: ({
         x: 300,
         y: 200,
       }),
       data: { label: `Node ${id}` },
-      style: { width: 100, height: 50, backgroundColor: randomColor(), border: '1px solid #000000' },
+      style: { width: 100, height: 50, zIndex: 0, backgroundColor: randomColor(), border: '1px solid #000000' },
+      layer: nodes.length + 1,
     };
     setNodes((nds) => nds.concat(newNode));
   }
@@ -135,10 +119,6 @@ const addNewNodeInGroup = () => {
 
   };
 
-  const isGroup = (node) => {
-    return node?.type == 'group' && node.id == selectedNodes[0] ? setTeste(true) : setTeste(false)
-  }
-
   const addNewNodeInGroupExtent = () => {
     const id = getId();
     const newNode = {
@@ -179,6 +159,7 @@ const addNewNodeInGroup = () => {
         data: { label: node.data.label },
         type: node.type,
         style: node.style,
+        layer: node.layer,
         selected: true
       };
       setNodes((nds) => nds.concat(newNode));
@@ -217,6 +198,94 @@ const addNewNodeInGroup = () => {
     else nodes[nodeIndex].type = 'resiablenohandles'
   }
 
+
+  const downShowNode = () => {
+    if(nodes.length == 1) return false
+    console.log('é pra descer')
+    const nodeDown = nodes.map((n) => {
+      if ((selectedNodes.includes(n.id))) {
+        if(n.style?.zIndex < nodes.length) {
+          n.style = {
+            ...n.style,
+            zIndex: -10,
+          }
+          return n;
+        }
+      } else {
+        return n;
+      }
+    })
+    console.info(nodeDown)
+    setNodes(nodeDown)
+  }
+
+
+  const upShowNode = () => {
+    console.log('é pra subir')
+    const nodeUp = nodes.map((n) => {
+      if (selectedNodes.includes(n.id)) {
+        n.style = {
+          ...n.style,
+          zIndex: `${Number(n.style?.zIndex) + 10}`,
+        }
+      }
+      return n;
+    })
+    console.error(nodeUp)
+    setNodes(nodeUp);
+  }
+
+  const isGroup = (node) => {
+    return node?.type == 'group' && node.id == selectedNodes[0] ? setTeste(true) : setTeste(false)
+  }
+  
+  // add index para camadas
+  const isGroup2 = (node) => {
+    if(node?.type == 'group' && node.id == selectedNodes[0]) {
+      setTeste(true)
+    } else {
+      setTeste(false)
+    }
+    updateLayers()
+    const nodeIndex = nodes.indexOf(nodes.find(({id}) => id == node.id))
+    nodes[nodeIndex].style = {
+      ...nodes[nodeIndex].style,
+      zIndex: `${ (nodes.length + 1) * 10 }`,
+    }
+  }
+
+  const addNewNode = useCallback((event) => {
+    const id = getId();
+    const newNode = {
+      id,
+      type: 'resizable',
+      position: project({
+        x: event.clientX,
+        y: event.clientY,
+      }),
+      data: { label: `Node ${id}` },
+      style: { width: 100, height: 50, backgroundColor: '#658BF7', zIndex: `${nodes.length}`, border: '1px solid #000000' },
+    };
+    setNodes((nds) => nds.concat(newNode));
+  },
+  [setNodes, project]
+  )
+
+
+  const updateLayers = () => {
+    let index = 0;
+    nodes.map((node) => {
+      node.style = {
+        ...node.style,
+        zIndex: `${index * 10}`,
+      }
+      index++;
+      return node;
+    })
+  }
+
+  const nada = () => { return false }
+
   return (
     <div>
       <main style={cssFlow}>
@@ -237,12 +306,20 @@ const addNewNodeInGroup = () => {
           onKeyDown={keyDown}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
-          onClick={shiftPressed ? addNewNode : controlPressed ? addNewGroup : console.log("")}
+          onClick={shiftPressed ? addNewNode : controlPressed ? addNewGroup : nada}
           {...props}  
           edgeTypes={edgeTypes}
         >
-          <Background variant={BackgroundVariant.Lines} />
-          {/* <MiniMap /> */}
+          <Background 
+            variant={BackgroundVariant.Lines} 
+            gap={5} 
+          />
+          <Background
+              id="12345"
+              gap={100}
+              color="#e3e3e3"
+              variant={BackgroundVariant.Lines}
+          />
           <Controls />
         </ReactFlow>
       </main>
@@ -250,6 +327,9 @@ const addNewNodeInGroup = () => {
         <span style={cssNodeSelect}>
       {teste ? 'Group select ' : 'node select '}
            = {selectedNodes}
+        </span>
+        <span>
+          camadas = {nodes.length} | nodeLayer = {nodes[nodes.length - 1]?.layer}
         </span>
       </div>
       <div style={cssBtnGroup}>
@@ -262,6 +342,8 @@ const addNewNodeInGroup = () => {
         <button style={cssBtn} onClick={addNewNodeInGroupExtent}>Adicionar ao Grugpo Extendido</button>
         <button style={cssBtn} onClick={delNodeInGroup}>Retirar do Grupo</button>
         <button style={cssBtn} onClick={delNode}>Deletar Node</button>
+        <button style={cssBtn} onClick={downShowNode}>Descer Camada</button>
+        <button style={cssBtn} onClick={upShowNode}>Subir Camada</button>
       </div>
     </div>
   );

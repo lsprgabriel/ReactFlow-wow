@@ -3,8 +3,6 @@ import { Handle, Position, NodeResizer } from 'reactflow';
 
 const ResizableNodeSelected = ({ data, selected, isConnectable, id }) => {
 
-    console.log(id)
-
     return (
         <>
             <NodeResizer color="#0042FF" isVisible={selected} minWidth={100} minHeight={50} />
