@@ -13,13 +13,16 @@ import ReactFlow, {
   useKeyPress,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import ButtonEdge from './ButtonEdge'
 import ResizableNodeSelected from './ResizableNodeSelected.jsx';
+import ResizableNodeSelectedNoHandles from './ResiableNodeSelectedNoHandles.jsx'
 import { useState, useCallback } from 'react';
 
 import { cssFlow, cssBtnGroup, cssBtn, cssNodeSelect, defaultNode } from './styles/frameworkCSS.ts';
 import { getId } from './utils/getId.ts';
 
-const nodeTypes = { resizable: ResizableNodeSelected };
+const nodeTypes = { resizable: ResizableNodeSelected, resiablenohandles: ResizableNodeSelectedNoHandles };
+const edgeTypes = { buttonedge: ButtonEdge }
 const initNodes = [defaultNode];
 
 function Flow(props) {
@@ -43,16 +46,15 @@ function Flow(props) {
   const onEdgesChange = useCallback(
     (changes) => {
       setEdges((eds) => applyEdgeChanges(changes, eds))
-      console.log(edges)
     },
     [],
   );
 
   const onConnect = useCallback(
     (connection) => {
-      setEdges((eds) => addEdge(connection, eds))
+      const edge = {...connection, type: 'buttonedge'}
+      setEdges((eds) => addEdge(edge, eds))
 
-      console.log(connection)
     },
     [setEdges],
   );
@@ -109,14 +111,12 @@ function Flow(props) {
       },
     };
      setNodes((nds) => nds.concat(newGroup));
-     console.log(newGroup, nodes);
   },
   [setNodes, project],
    )
 
 const addNewNodeInGroup = () => {
       const id = getId();
-      console.log(nodes[0]);
       
     const newNode = {
       id,
@@ -131,12 +131,11 @@ const addNewNodeInGroup = () => {
   };
 
   const delNodeInGroup = () => {
-    const nodeset = nodes.find((element) => element == selectedNodes[0])
-    console.log(nodeset);
+   const nodeset = nodes.find((element) => element == selectedNodes[0])
+
   };
 
   const isGroup = (node) => {
-    console.log(node?.type)
     return node?.type == 'group' && node.id == selectedNodes[0] ? setTeste(true) : setTeste(false)
   }
 
@@ -162,7 +161,6 @@ const addNewNodeInGroup = () => {
     }
     nodesIds = nodesIds.filter((value, index) => nodesIds.indexOf(value) == index);
     setSelectedNodes(nodesIds);
-    console.log(nodesIds)
   }
 
   const duplicateNode = () => {
@@ -188,7 +186,6 @@ const addNewNodeInGroup = () => {
   }
 
   const changeColor = () => {
-    console.log(selectedNodes)
     const newNodes = nodes.map((node) => {
       if (selectedNodes.includes(node.id)) {
         node.style = {
@@ -207,6 +204,19 @@ const addNewNodeInGroup = () => {
     }
   }
 
+  const onEdgeClick = (evt, edge) => {
+    const edgeIndex = edges.indexOf(edges.find(({id}) => id == edge.id))
+
+    edges[edgeIndex].animated = !edges[edgeIndex].animated
+  }
+
+  const changeHandle = (evt, node) => {
+    const nodeIndex = nodes.indexOf(nodes.find(({id}) => id == node.id))
+
+    if (nodes[nodeIndex].type !== 'resizable') nodes[nodeIndex].type = 'resizable'
+    else nodes[nodeIndex].type = 'resiablenohandles'
+  }
+
   return (
     <div>
       <main style={cssFlow}>
@@ -221,12 +231,15 @@ const addNewNodeInGroup = () => {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onNodeClick={(e, node) =>  isGroup(node) }
+          onNodeDoubleClick={changeHandle}
+          onEdgeDoubleClick={onEdgeClick}
           fitView
           onKeyDown={keyDown}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
           onClick={shiftPressed ? addNewNode : controlPressed ? addNewGroup : console.log("")}
           {...props}  
+          edgeTypes={edgeTypes}
         >
           <Background variant={BackgroundVariant.Lines} />
           {/* <MiniMap /> */}
