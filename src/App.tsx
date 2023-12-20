@@ -12,6 +12,7 @@ import 'reactflow/dist/style.css';
 import ResizableNodeSelected from './ResizableNodeSelected.jsx'; 
 
 import 'reactflow/dist/style.css';
+import './Shapes.css'
 
 const nodeTypes: any = {
   ResizableNodeSelected,
@@ -28,7 +29,7 @@ const initNodes = [
     type: 'ResizableNodeSelected',
     position: { x: 250, y: 250 },
     data: { label: `Node ${id}` },
-    style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
+    className: 'rectangle',
   },
 ];
  
@@ -55,7 +56,7 @@ function App() {
         y: 200,
       }),
       data: { label: `Node ${id}`},
-      style: { width: 100, height: 50, backgroundColor: '#658BF7', border: '1px solid #000000' },
+      className: 'rectangle'
     };
     setNodes((nds) => nds.concat(newNode));
   }
@@ -70,12 +71,58 @@ function App() {
         y: 200,
       }),
       data: { label: `Node ${id}`},
-      style: { width: 100, height: 50, backgroundColor: randomColor(), border: '1px solid #000000' },
+      style: { backgroundColor: randomColor() },
+      className: 'difRectangle',
     };
     setNodes((nds) => nds.concat(newNode));
   }
 
-  const cssFlow = {height: '85vh',width: '100vw', borderBottom: '2px solid red'}
+  const addCirNode = () => {
+    const id = getId();
+    const newNode = {
+      id,
+      type: 'ResizableNodeSelected',
+      position: ({
+        x: 300,
+        y: 200,
+      }),
+      data: { label: `Node ${id}`},
+      className: 'circle'
+    };
+    setNodes((nds) => nds.concat(newNode));
+  }
+
+  const addTriNode = () => {
+    const id = getId();
+    const newNode = {
+      id,
+      type: 'ResizableNodeSelected',
+      position: ({
+        x: 300,
+        y: 200,
+      }),
+      data: { label: `Node ${id}`},
+      className: 'triangle'
+    };
+    setNodes((nds) => nds.concat(newNode));
+  }
+
+  const addSqrNode = () => {
+    const id = getId();
+    const newNode = {
+      id,
+      type: 'ResizableNodeSelected',
+      position: ({
+        x: 300,
+        y: 200,
+      }),
+      data: { label: `Node ${id}`},
+      className: 'square'
+    };
+    setNodes((nds) => nds.concat(newNode));
+  }
+
+  const cssFlow = {height: '85vh', width: '100vw', borderBottom: '2px solid red'}
 
   const cssBtn = {
     backgroundColor: '#4CAF50', 
@@ -116,8 +163,11 @@ function App() {
         </ReactFlow>
       </main>
       <div style={cssBtnGroup}>
-        <button style={cssBtn} onClick={addNewNode}>Criar Node Padrão</button>
-        <button style={cssBtn} onClick={addDifNode}>Criar Node Diferentão</button>
+        <button style={cssBtn} onClick={addNewNode}>Criar Node padrão</button>
+        <button style={cssBtn} onClick={addDifNode}>Criar Node de cor aleatória</button>
+        <button style={cssBtn} onClick={addSqrNode}>Criar Node quadrado</button>
+        <button style={cssBtn} onClick={addCirNode}>Criar Node redondao</button>
+        <button style={cssBtn} onClick={addTriNode}>Criar Node triângulo</button>
       </div>
     </div>
   );

@@ -1,0 +1,61 @@
+.rectangle {
+    width: 100px;
+    height: 40px;
+    background-color: #658BF7;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.difRectangle {
+    width: 100px;
+    height: 40px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.circle {
+    width: 100px;
+    height: 100px;
+    background-color: #658BF7;
+    border: 1px solid black;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.triangle {
+    width: 100px;
+    height: 100px;
+    clip-path: polygon(49% 0, 0% 100%, 100% 100%);
+    background-color: #658BF7;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    outline: 1px solid black;
+}
+
+.square {
+    width: 80px;
+    height: 80px;
+    background-color: #658BF7;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.diamond {
+    width: 80px;
+    height: 80px;
+    background-color: #658BF7;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: rotate(90deg);
+}
