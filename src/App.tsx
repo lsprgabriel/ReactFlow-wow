@@ -200,8 +200,6 @@ const addNewNodeInGroup = () => {
 
 
   const downShowNode = () => {
-    if(nodes.length == 1) return false
-    console.log('é pra descer')
     const nodeDown = nodes.map((n) => {
       if ((selectedNodes.includes(n.id))) {
         if(n.style?.zIndex < nodes.length) {
@@ -215,43 +213,24 @@ const addNewNodeInGroup = () => {
         return n;
       }
     })
-    console.info(nodeDown)
     setNodes(nodeDown)
   }
 
-
   const upShowNode = () => {
-    console.log('é pra subir')
     const nodeUp = nodes.map((n) => {
       if (selectedNodes.includes(n.id)) {
         n.style = {
           ...n.style,
-          zIndex: `${Number(n.style?.zIndex) + 10}`,
+          zIndex: Number(n.style?.zIndex) + 10,
         }
       }
       return n;
     })
-    console.error(nodeUp)
     setNodes(nodeUp);
   }
 
   const isGroup = (node) => {
     return node?.type == 'group' && node.id == selectedNodes[0] ? setTeste(true) : setTeste(false)
-  }
-  
-  // add index para camadas
-  const isGroup2 = (node) => {
-    if(node?.type == 'group' && node.id == selectedNodes[0]) {
-      setTeste(true)
-    } else {
-      setTeste(false)
-    }
-    updateLayers()
-    const nodeIndex = nodes.indexOf(nodes.find(({id}) => id == node.id))
-    nodes[nodeIndex].style = {
-      ...nodes[nodeIndex].style,
-      zIndex: `${ (nodes.length + 1) * 10 }`,
-    }
   }
 
   const addNewNode = useCallback((event) => {
@@ -270,19 +249,6 @@ const addNewNodeInGroup = () => {
   },
   [setNodes, project]
   )
-
-
-  const updateLayers = () => {
-    let index = 0;
-    nodes.map((node) => {
-      node.style = {
-        ...node.style,
-        zIndex: `${index * 10}`,
-      }
-      index++;
-      return node;
-    })
-  }
 
   const nada = () => { return false }
 
@@ -325,11 +291,8 @@ const addNewNodeInGroup = () => {
       </main>
       <div style={cssBtnGroup}>
         <span style={cssNodeSelect}>
-      {teste ? 'Group select ' : 'node select '}
-           = {selectedNodes}
-        </span>
-        <span>
-          camadas = {nodes.length} | nodeLayer = {nodes[nodes.length - 1]?.layer}
+          {teste ? 'Group select ' : 'node select '}
+          = {selectedNodes}
         </span>
       </div>
       <div style={cssBtnGroup}>
