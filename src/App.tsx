@@ -30,6 +30,7 @@ function Flow(props) {
   const { project } = useReactFlow();
 
   const shiftPressed = useKeyPress('Shift')
+  const controlPressed = useKeyPress('Control')
 
   const onNodesChange = useCallback(
     async (changes) => {
@@ -93,12 +94,15 @@ function Flow(props) {
     setNodes(newNodes);
   }
 
-   const addNewGroup = () => {
+   const addNewGroup = useCallback((event) => {
     const id = getId();
     const newGroup = {
       id,
       type: "group",
-      position: { x: 0, y: 0 },
+      position: project({
+        x: event.clientX,
+        y: event.clientY,
+      }),
       style: {
         width: 300,
         height: 300,
@@ -106,7 +110,9 @@ function Flow(props) {
     };
      setNodes((nds) => nds.concat(newGroup));
      console.log(newGroup, nodes);
-  };
+  },
+  [setNodes, project],
+   )
 
 const addNewNodeInGroup = () => {
       const id = getId();
@@ -219,8 +225,7 @@ const addNewNodeInGroup = () => {
           onKeyDown={keyDown}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
-          panOnDrag={true}
-          onClick={shiftPressed ? addNewNode : ''}
+          onClick={shiftPressed ? addNewNode : controlPressed ? addNewGroup : console.log("")}
           {...props}  
         >
           <Background variant={BackgroundVariant.Lines} />
