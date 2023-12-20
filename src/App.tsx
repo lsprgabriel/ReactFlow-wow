@@ -27,8 +27,8 @@ function App(props) {
   const [edges, setEdges] = useEdgesState([]);
   const [selectedNodes, setSelectedNodes] = useState([]);
   const { project } = useReactFlow();
-
-  const shiftPressed = useKeyPress('Shift')
+  const [teste, setTeste] = useState([])  
+  const shiftPressed = useKeyPress('Shift')  
 
   const onNodesChange = useCallback(
     async (changes) => {
@@ -73,6 +73,68 @@ function App(props) {
   [setNodes, project],
   )
 
+   const addNewGroup = () => {
+    const id = getId();
+    const newGroup = {
+      id,
+      type: "group",
+      position: { x: 0, y: 0 },
+      style: {
+        width: 300,
+        height: 300,
+      },
+    };
+
+
+     setNodes((nds) => nds.concat(newGroup));
+     
+     console.log(newGroup, nodes);
+  };
+
+const addNewNodeInGroup = () => {
+      const id = getId();
+      console.log(nodes[0]);
+      
+    const newNode = {
+      id,
+      position: {
+        x: 20,
+        y: 100,
+      },
+      parentNode: selectedNodes[0],
+      data: { label: `Node ${id}` },
+    };
+
+    setNodes((nds) => nds.concat(newNode));
+  };
+
+  const delNodeInGroup = () => {
+   const nodeset = nodes.find((element) => element == selectedNodes[0])
+console.log(nodeset);
+
+  };
+  const isGroup = (node) => {
+    console.log(node?.type)
+    return node?.type == 'group' && node.id == selectedNodes[0] ? setTeste(true) : setTeste(false)
+  }
+
+  const addNewNodeInGroupExtent = () => {
+    const id = getId();
+    const newNode = {
+      id,
+      position: {
+        x: 20,
+        y: 100,
+      },
+      parentNode: selectedNodes[0],
+      extent: "parent",
+      data: { label: `Node ${id}` },
+    };
+
+    setNodes((nds) => nds.concat(newNode));
+  };
+
+
   const addDifNode = () => {
     const id = getId();
     const newNode = {
@@ -89,12 +151,11 @@ function App(props) {
   }
 
   const selectNode = (changes) => {
-    let nodesIds = [0];
-    for (let change of changes) {
+    let nodesIds = [];
+    for(let change of changes) {
       nodesIds.push(change.id)
     }
     nodesIds = nodesIds.filter((value, index) => nodesIds.indexOf(value) == index);
-    nodesIds = nodesIds.filter((value) => value != 0);
     setSelectedNodes(nodesIds);
     console.log(nodesIds)
   }
@@ -154,7 +215,7 @@ function App(props) {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
-          onNodeClick={(e, node) => console.log('click', node)}
+          onNodeClick={(e, node) =>  isGroup(node) }
           fitView
           onKeyDown={keyDown}
           onConnect={onConnect}
@@ -170,18 +231,23 @@ function App(props) {
       </main>
       <div style={cssBtnGroup}>
         <span style={cssNodeSelect}>
-          node select = {selectedNodes}
+      {teste ? 'Group select ' : 'node select '}
+           = {selectedNodes}
         </span>
       </div>
       <div style={cssBtnGroup}>
         <button style={cssBtn} onClick={addNewNode}>Criar Node Padrão</button>
         <button style={cssBtn} onClick={addDifNode}>Criar Node Diferentão</button>
         <button style={cssBtn} onClick={duplicateNode}>Duplicar</button>
-        <button style={cssBtn} onClick={changeColor}>Mudar Cor</button>
+        <button style={cssBtn} onClick={changeColor}> mudar Cor</button>
+        <button style={cssBtn} onClick={addNewGroup}> Criar grupo</button>
+        <button style={cssBtn} onClick={addNewNodeInGroup}> Adicionar ao grupo</button>
+        <button style={cssBtn} onClick={addNewNodeInGroupExtent}> Adicionar ao grupo extendido</button>
+        <button style={cssBtn} onClick={delNodeInGroup}> retirar do grupo</button>
       </div>
     </div>
   );
-}
+  }
 
 function FlowWithProvider(props) {
   return (
